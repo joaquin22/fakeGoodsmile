@@ -1,0 +1,21 @@
+{
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "fake API",
+            "database": "fakegoodsmile",
+            "username": "joaquin",
+            "password": "root"
+        }
+    ],
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
