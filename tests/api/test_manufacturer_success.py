@@ -14,6 +14,7 @@ pytestmark = pytest.mark.django_db
 
 class TestManufacturerEndpoints:
     endpoint = "/api/manufacturer/"
+
     logger.info(f"=====   Start Test Manufacturer Endpoints   =====")
 
     def test_list(self, api_client) -> None:
@@ -75,3 +76,20 @@ class TestManufacturerEndpoints:
         assert json.loads(response.content)["name"] == manufacturer.name
 
         logger.info(f"=====   End Test Manufacturer Retrive   =====")
+
+    def test_delete(self, api_client) -> None:
+        """
+        Test the delete manufacture Endpoint
+        :param api_client:
+        :return: None
+        """
+        logger.info(f"=====   Start Test Manufacturer Delete   =====")
+
+        manufacturer = baker.make(Manufacturer)
+        logger.info(f"Manufacturer ID: {manufacturer.id}")
+        url = f"{self.endpoint}{manufacturer.id}/"
+        response = api_client().delete(url)
+
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+
+        logger.info(f"=====   End Test Manufacturer Delete   =====")
