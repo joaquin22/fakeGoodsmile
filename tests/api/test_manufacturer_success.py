@@ -1,44 +1,77 @@
 import pytest
 import logging
+import json
+from model_bakery import baker
 
 from rest_framework.test import APIClient
 from rest_framework import status
 
-client = APIClient()
+from API.models import Manufacturer
+
 logger = logging.getLogger(__name__)
+pytestmark = pytest.mark.django_db
 
 
-@pytest.mark.django_db
-def test_list_manufacturers():
-    response = client.get("/api/manufacturer/")
-    assert response.status_code == status.HTTP_200_OK
+class TestManufacturerEndpoints:
+    endpoint = "/api/manufacturer/"
+    logger.info(f"=====   Start Test Manufacturer Endpoints   =====")
 
+    def test_list(self, api_client) -> None:
+        """
+        Test the list manufactures Endpoint
+        :param api_client:
+        :return: None
+        """
+        logger.info(f"=====   Start Test Manufacturer List   =====")
+        baker.make(Manufacturer, _quantity=3)
 
-@pytest.mark.django_db
-def test_create_manufacturer(api_client) -> None:
-    """
-    Test the create task API
-    :param api_client:
-    :return: None
-    """
-    payload = {
-        "name": "Good Smie Fake",
-    }
+        response = api_client().get(self.endpoint)
+        logger.info(f"Response: {json.loads(response.content)}")
 
-    # Create a task
-    response_create = api_client.post("/api/manufacturer/", data=payload, format="json")
+        assert response.status_code == status.HTTP_200_OK
+        assert len(json.loads(response.content)) == 3
+        logger.info(f"=====   End Test Manufacturer List   =====")
 
-    manufacturer_id = response_create.data["id"]
-    logger.info(f"Created manufacturer with id: {manufacturer_id}")
-    logger.info(f"Response: {response_create.data}")
-    assert response_create.status_code == 201
-    assert response_create.data["name"] == payload["name"]
+    def test_create(self, api_client) -> None:
+        """
+        Test the create manufacture Endpoint
+        :param api_client:
+        :return: None
+        """
+        logger.info(f"=====   Start Test Manufacturer Create   =====")
 
-    # Read the task
-    response_read = api_client.get(
-        f"/api/manufacturer/{manufacturer_id}/", format="json"
-    )
-    logger.info(f"Read manufacturer with id: {manufacturer_id}")
-    logger.info(f"Response: {response_read.data}")
-    assert response_read.status_code == 200
-    assert response_read.data["name"] == payload["name"]
+        manufacturer = baker.prepare(Manufacturer)
+        expected_json = {"name": manufacturer.name}
+
+        logger.info(f"Expected json: {expected_json}")
+
+        response = api_client().post(self.endpoint, data=expected_json, format="json")
+        manufacturer_id = response.data["id"]
+
+        logger.info(f"Created manufacturer with id: {manufacturer_id}")
+        logger.info(f"Response: {json.loads(response.content)}")
+
+        assert response.status_code == status.HTTP_201_CREATED
+        assert json.loads(response.content)["name"] == expected_json["name"]
+
+        logger.info(f"=====   EndTest Manufacturer Create   =====")
+
+    def test_retrieve(self, api_client) -> None:
+        """
+        Test the retrieve manufacture Endpoint
+        :param api_client:
+        :return: None
+        """
+        logger.info(f"=====   Start Test Manufacturer Retrive   =====")
+
+        manufacturer = baker.make(Manufacturer)
+        logger.info(f"Manufacturer ID: {manufacturer.id}")
+        url = f"{self.endpoint}{manufacturer.id}/"
+        response = api_client().get(url)
+
+        logger.info(f"Response: {json.loads(response.content)}")
+
+        assert response.status_code == status.HTTP_200_OK
+        assert json.loads(response.content)["name"] == manufacturer.name
+
+        logger.info(f"=====   End Test Manufacturer Retrive   =====")
