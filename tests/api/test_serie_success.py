@@ -3,17 +3,18 @@ import logging
 import json
 from model_bakery import baker
 
+
 from rest_framework import status
 
-from API.models import Manufacturer
+from API.models import Serie
 
 logger = logging.getLogger(__name__)
 pytestmark = pytest.mark.django_db
 
 
-class TestManufacturerEndpoints:
-    endpoint = "/api/manufacturer/"
-    logger.info(f"=====   Start Test Manufacturer Endpoints   =====")
+class TestSerieEndpoints:
+    endpoint = "/api/serie/"
+    logger.info(f"=====   Start Test Serie Endpoints   =====")
 
     def test_list(self, api_client) -> None:
         """
@@ -21,15 +22,15 @@ class TestManufacturerEndpoints:
         :param api_client:
         :return: None
         """
-        logger.info(f"=====   Start Test Manufacturer List   =====")
-        baker.make(Manufacturer, _quantity=3)
+        logger.info(f"=====   Start Test Serie List   =====")
+        baker.make(Serie, _quantity=3)
 
         response = api_client().get(self.endpoint)
         logger.info(f"Response: {json.loads(response.content)}")
 
         assert response.status_code == status.HTTP_200_OK
         assert len(json.loads(response.content)) == 3
-        logger.info(f"=====   End Test Manufacturer List   =====")
+        logger.info(f"=====   End Test Serie List   =====")
 
     def test_create(self, api_client) -> None:
         """
@@ -37,23 +38,23 @@ class TestManufacturerEndpoints:
         :param api_client:
         :return: None
         """
-        logger.info(f"=====   Start Test Manufacturer Create   =====")
+        logger.info(f"=====   Start Test Serie Create   =====")
 
-        manufacturer = baker.prepare(Manufacturer)
-        expected_json = {"name": manufacturer.name}
+        serie = baker.prepare(Serie)
+        expected_json = {"name": serie.name}
 
         logger.info(f"Expected json: {expected_json}")
 
         response = api_client().post(self.endpoint, data=expected_json, format="json")
-        manufacturer_id = response.data["id"]
+        serie_id = response.data["id"]
 
-        logger.info(f"Created manufacturer with id: {manufacturer_id}")
+        logger.info(f"Created serie with id: {serie_id}")
         logger.info(f"Response: {json.loads(response.content)}")
 
         assert response.status_code == status.HTTP_201_CREATED
         assert json.loads(response.content)["name"] == expected_json["name"]
 
-        logger.info(f"=====   EndTest Manufacturer Create   =====")
+        logger.info(f"=====   EndTest Serie Create   =====")
 
     def test_retrieve(self, api_client) -> None:
         """
@@ -61,19 +62,19 @@ class TestManufacturerEndpoints:
         :param api_client:
         :return: None
         """
-        logger.info(f"=====   Start Test Manufacturer Retrive   =====")
+        logger.info(f"=====   Start Test Serie Retrive   =====")
 
-        manufacturer = baker.make(Manufacturer)
-        logger.info(f"Manufacturer ID: {manufacturer.id}")
-        url = f"{self.endpoint}{manufacturer.id}/"
+        serie = baker.make(Serie)
+        logger.info(f"Serie ID: {serie.id}")
+        url = f"{self.endpoint}{serie.id}/"
         response = api_client().get(url)
 
         logger.info(f"Response: {json.loads(response.content)}")
 
         assert response.status_code == status.HTTP_200_OK
-        assert json.loads(response.content)["name"] == manufacturer.name
+        assert json.loads(response.content)["name"] == serie.name
 
-        logger.info(f"=====   End Test Manufacturer Retrive   =====")
+        logger.info(f"=====   End Test Serie Retrive   =====")
 
     def test_put(self, api_client) -> None:
         """
@@ -81,13 +82,13 @@ class TestManufacturerEndpoints:
         :param api_client:
         :return: None
         """
-        logger.info(f"=====   Start Test Manufacturer Put   =====")
+        logger.info(f"=====   Start Test Serie Put   =====")
 
-        manufacturer = baker.make(Manufacturer)
-        logger.info(f"Manufacturer Name: {manufacturer.name}")
+        serie = baker.make(Serie)
+        logger.info(f"Serie Name: {serie.name}")
 
         put_json = {"name": "test"}
-        url = f"{self.endpoint}{manufacturer.id}/"
+        url = f"{self.endpoint}{serie.id}/"
         response = api_client().put(url, put_json)
 
         logger.info(f"Response: {json.loads(response.content)}")
@@ -95,7 +96,7 @@ class TestManufacturerEndpoints:
         assert response.status_code == status.HTTP_200_OK
         assert json.loads(response.content)["name"] == put_json["name"]
 
-        logger.info(f"=====   End Test Manufacturer Put   =====")
+        logger.info(f"=====   End Test Serie Put   =====")
 
     def test_delete(self, api_client) -> None:
         """
@@ -103,13 +104,13 @@ class TestManufacturerEndpoints:
         :param api_client:
         :return: None
         """
-        logger.info(f"=====   Start Test Manufacturer Delete   =====")
+        logger.info(f"=====   Start Test Serie Delete   =====")
 
-        manufacturer = baker.make(Manufacturer)
-        logger.info(f"Manufacturer ID: {manufacturer.id}")
-        url = f"{self.endpoint}{manufacturer.id}/"
+        serie = baker.make(Serie)
+        logger.info(f"Serie ID: {serie.id}")
+        url = f"{self.endpoint}{serie.id}/"
         response = api_client().delete(url)
 
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
-        logger.info(f"=====   End Test Manufacturer Delete   =====")
+        logger.info(f"=====   End Test Serie Delete   =====")
