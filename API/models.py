@@ -61,9 +61,14 @@ class Product(models.Model):
         verbose_name_plural = _("Products")
 
 
-class Image(models.Model):
+class ProductImage(models.Model):
     product = models.ForeignKey(
-        Product, verbose_name=_("Product"), on_delete=models.CASCADE
+        Product,
+        verbose_name=_("Product"),
+        related_name="images",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
     image = models.ImageField(
         _("Image Product"),

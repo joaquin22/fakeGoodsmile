@@ -17,6 +17,12 @@ serie_detail = views.SerieViewSet.as_view(
     {"get": "retrieve", "put": "update", "patch": "partial_update", "delete": "destroy"}
 )
 
+product_list_create = views.ProductViewSet.as_view({"get": "list", "post": "create"})
+
+product_detail = views.ProductViewSet.as_view(
+    {"get": "retrieve", "put": "update", "patch": "partial_update", "delete": "destroy"}
+)
+
 
 manufacturer_url = [
     path("", manufacturer_list_create),
@@ -28,8 +34,13 @@ serie_url = [
     path("<int:pk>/", serie_detail),
 ]
 
+product_url = [
+    path("", product_list_create),
+    path("<int:pk>/", product_detail),
+]
+
 urlpatterns = [
     path("manufacturer/", include(manufacturer_url)),
     path("serie/", include(serie_url)),
-    # path("product/", include(cliente_url)),
+    path("product/", include(product_url)),
 ]

@@ -18,7 +18,7 @@ class TestSerieEndpoints:
 
     def test_list(self, api_client) -> None:
         """
-        Test the list manufactures Endpoint
+        Test the list serie Endpoint
         :param api_client:
         :return: None
         """
@@ -34,7 +34,7 @@ class TestSerieEndpoints:
 
     def test_create(self, api_client) -> None:
         """
-        Test the create manufacture Endpoint
+        Test the create serie Endpoint
         :param api_client:
         :return: None
         """
@@ -58,7 +58,7 @@ class TestSerieEndpoints:
 
     def test_retrieve(self, api_client) -> None:
         """
-        Test the retrieve manufacture Endpoint
+        Test the retrieve serie Endpoint
         :param api_client:
         :return: None
         """
@@ -78,7 +78,7 @@ class TestSerieEndpoints:
 
     def test_put(self, api_client) -> None:
         """
-        Test the update manufacture Endpoint
+        Test the update serie Endpoint
         :param api_client:
         :return: None
         """
@@ -100,7 +100,7 @@ class TestSerieEndpoints:
 
     def test_delete(self, api_client) -> None:
         """
-        Test the delete manufacture Endpoint
+        Test the delete serie Endpoint
         :param api_client:
         :return: None
         """
