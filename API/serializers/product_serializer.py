@@ -49,7 +49,7 @@ class ProductSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         images_data = self.context["request"].data.getlist("images")
         if images_data:
-            instance.images.clear()
+            instance.images.all().delete()
             for image in images_data:
                 product_image = ProductImage.objects.create(image=image)
                 instance.images.add(product_image)

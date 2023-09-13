@@ -39,8 +39,15 @@ product_url = [
     path("<int:pk>/", product_detail),
 ]
 
+
+auth_url = [
+    path("login/", views.LoginView.as_view(), name="login"),
+    path("register/", views.RegisterView.as_view(), name="register"),
+]
+
 urlpatterns = [
     path("manufacturer/", include(manufacturer_url)),
     path("serie/", include(serie_url)),
     path("product/", include(product_url)),
+    path("auth/", include(auth_url)),
 ]

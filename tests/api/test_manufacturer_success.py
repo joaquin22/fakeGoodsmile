@@ -1,8 +1,10 @@
 import pytest
 import logging
 import json
-from model_bakery import baker
 
+from django.urls import reverse_lazy
+
+from model_bakery import baker
 from rest_framework import status
 
 from API.models import Manufacturer
@@ -13,6 +15,7 @@ pytestmark = pytest.mark.django_db
 
 class TestManufacturerEndpoints:
     endpoint = "/api/manufacturer/"
+
     logger.info(f"=====   Start Test Manufacturer Endpoints   =====")
 
     def test_list(self, api_client) -> None:
@@ -31,20 +34,36 @@ class TestManufacturerEndpoints:
         assert len(json.loads(response.content)) == 3
         logger.info(f"=====   End Test Manufacturer List   =====")
 
-    def test_create(self, api_client) -> None:
+    def test_create(
+        self, api_client, create_user_admin, login_user_admin_payload
+    ) -> None:
         """
         Test the create manufacture Endpoint
         :param api_client:
         :return: None
         """
-        logger.info(f"=====   Start Test Manufacturer Create   =====")
+        logger.info(f"=====   Start Test Endpoint: Manufacturer Create   =====")
+
+        response_login = api_client().post(
+            reverse_lazy("API:login"), data=login_user_admin_payload, format="json"
+        )
+
+        logger.info(f"Response Login: {json.loads(response_login.content)}")
+
+        assert json.loads(response_login.content)["id"] == create_user_admin.id
+        assert response_login.status_code == status.HTTP_200_OK
+
+        access_token = json.loads(response_login.content)["access"]
+        header = {"Authorization": f"Jwt {access_token}"}
 
         manufacturer = baker.prepare(Manufacturer)
         expected_json = {"name": manufacturer.name}
 
         logger.info(f"Expected json: {expected_json}")
 
-        response = api_client().post(self.endpoint, data=expected_json, format="json")
+        response = api_client().post(
+            self.endpoint, data=expected_json, format="json", headers=header
+        )
         manufacturer_id = response.data["id"]
 
         logger.info(f"Created manufacturer with id: {manufacturer_id}")
